@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Um lugar para ler com intenção, acompanhar seu progresso e celebrar cada capítulo."
+    />
+    <meta name="theme-color" content="#0d1117" />
+    <title>Entrelinhas — seu clube de leitura</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      // Preencha com a URL e a chave pública (anon/publishable) do seu projeto Supabase.
+      window.CLUBE_SUPABASE_CONFIG = {
+        url: "https://dlpbzjfqxxznhwlcddpv.supabase.co/rest/v1/",
+        anonKey: "sb_publishable_TktxQhjVn9CZR8Yb_bg-mw_7BWm_5EF"
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="database.js" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="profile.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5zm0 0v16M8 7h8M8 11h8"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 13h4"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+      <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-4-3-6-4-9-1 2-2 3-3 4 0-4-2-7-3-8 0 4-4 8-4 13a7 7 0 0 0 7 7Z"/><path d="M10 17a2 2 0 0 0 4 0c0-1-.7-2-2-3-.5 1-2 2-2 3Z"/></symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 15 1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2Z"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m6-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm10 10v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></symbol>
+      <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></symbol>
+    </svg>
+
+    <section class="gate-screen" id="gate-screen" aria-labelledby="gate-title">
+      <div class="gate-card">
+        <div class="gate-brand-row">
+          <a class="brand" href="#gate-screen" aria-label="Entrelinhas">
+            <span class="brand-mark"><svg class="icon"><use href="#i-book" /></svg></span>
+            <span class="brand-copy"><strong>entrelinhas</strong><small>LER É VIVER MAIS</small></span>
+          </a>
+          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Alternar tema"><svg class="icon theme-icon"><use href="#i-moon" /></svg><span>Modo escuro</span></button>
+        </div>
+        <div class="gate-art" role="img" aria-label="Livros e uma xícara de café em uma mesa aconchegante"></div>
+        <div class="gate-content">
+          <span class="eyebrow muted-eyebrow">UM CLUBE PARA QUEM AMA HISTÓRIAS</span>
+          <h1 id="gate-title">Toda grande jornada começa com uma página.</h1>
+          <p class="gate-intro">Entre no seu clube para acompanhar leituras, registrar progresso e encontrar sua próxima história favorita.</p>
+          <div class="auth-tabs" role="tablist" aria-label="Acesso ao clube">
+            <button class="auth-tab active" id="signin-tab" type="button" role="tab" aria-selected="true" data-auth-mode="signin">Entrar</button>
+            <button class="auth-tab" id="signup-tab" type="button" role="tab" aria-selected="false" data-auth-mode="signup">Criar conta</button>
+          </div>
+          <form id="gate-auth-form" class="gate-form">
+            <label class="gate-field signup-only" hidden>Nome completo<input id="gate-name" type="text" autocomplete="name" maxlength="100" placeholder="Como podemos te chamar?" /></label>
+            <label class="gate-field signup-only" hidden>Nome de usuário<input id="gate-username" type="text" autocomplete="username" maxlength="30" pattern="[A-Za-z0-9_]{3,30}" placeholder="ex.: marinadaspaginas" /></label>
+            <label class="gate-field"><span id="gate-identifier-label">E-mail</span><input id="gate-email" type="email" autocomplete="email" placeholder="voce@email.com" required /></label>
+            <label class="gate-field">Senha<input id="gate-password" type="password" autocomplete="current-password" minlength="8" placeholder="Mínimo de 8 caracteres" required /></label>
+            <label class="gate-field signup-only" hidden>Código de convite <span class="optional-label">OPCIONAL</span><input id="gate-invite" type="text" maxlength="8" pattern="[A-Za-z0-9]{8}" placeholder="Insira o código para entrar em um clube" autocomplete="off" /></label>
+            <p class="gate-error" id="gate-error" role="alert"></p>
+            <button class="button button-gold gate-submit" id="gate-submit" type="submit">Entrar no clube <svg class="icon"><use href="#i-arrow" /></svg></button>
+          </form>
+          <p class="gate-footer"><svg class="icon"><use href="#i-lock" /></svg> Sua conta e seu progresso ficam protegidos.</p>
+          <p class="gate-setup-note" id="gate-setup-note" hidden>O acesso está aguardando a configuração do Supabase. Insira a URL e a chave pública em <code>index.html</code> e execute <code>supabase-schema.sql</code>. Para entrar com @usuário, publique a função <code>sign-in-username</code> e configure APP_ORIGIN nos secrets do Supabase.</p>
+          <p class="gate-setup-note" id="gate-demo-credentials" hidden>Conta de teste apenas neste navegador: <code>@admin</code> / <code>admin</code>. Não funciona em produção.</p>
+        </div>
+      </div>
+    </section>
+
+    <header class="topbar protected-content">
+      <a class="brand" href="#inicio" aria-label="Entrelinhas, início">
+        <span class="brand-mark"><svg class="icon"><use href="#i-book" /></svg></span>
+        <span class="brand-copy"><strong>entrelinhas</strong><small>LER É VIVER MAIS</small></span>
+      </a>
+
+      <button class="icon-button menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false">
+        <svg class="icon"><use href="#i-menu" /></svg>
+      </button>
+
+      <nav class="main-nav" id="main-nav" aria-label="Navegação principal">
+        <a class="nav-link active" href="#inicio">Início</a>
+        <a class="nav-link" href="#missao">Livros</a>
+        <a class="nav-link" href="#atividades">Missões</a>
+        <a class="nav-link" href="#atividades">Atividades</a>
+        <a class="nav-link" href="#comunidade">Comunidade</a>
+        <a class="nav-link" id="admin-nav-link" href="#admin-tools" hidden>Administração</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle header-theme-toggle" type="button" data-theme-toggle aria-label="Alternar tema"><svg class="icon theme-icon"><use href="#i-moon" /></svg></button>
+        <button class="icon-button" id="search-toggle" aria-label="Buscar atividades"><svg class="icon"><use href="#i-search" /></svg></button>
+        <button class="icon-button notification-button" id="notification-toggle" aria-label="Ver notificações">
+          <svg class="icon"><use href="#i-bell" /></svg><span class="notification-dot"></span>
+        </button>
+        <button class="profile-trigger" id="auth-open" aria-label="Entrar ou ver perfil">
+          <img id="header-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=96&q=80" alt="" />
+          <span id="header-name">Marina</span>
+          <span class="profile-chevron">⌄</span>
+        </button>
+        <button class="button button-outline signout-button" id="signout-button" type="button">Sair</button>
+      </div>
+    </header>
+
+    <main class="protected-content">
+      <section class="hero page-shell" id="inicio" aria-labelledby="hero-title">
+        <div class="hero-shade"></div>
+        <div class="hero-content">
+          <span class="eyebrow"><span class="eyebrow-dot"></span> SEU PRÓXIMO CAPÍTULO COMEÇA AQUI</span>
+          <p class="hero-greeting">Boa noite, <span id="greeting-name">Marina</span> <span class="wave">✳</span></p>
+          <h1 id="hero-title">Grandes histórias começam com um simples capítulo.</h1>
+          <p class="hero-description">Um cantinho seu, entre boas páginas e novas descobertas.</p>
+          <a class="button button-gold" href="#missao">Explorar meus livros <svg class="icon"><use href="#i-arrow" /></svg></a>
+        </div>
+        <div class="hero-caption"><span class="caption-line"></span> UM MOMENTO SÓ SEU</div>
+        <div class="hero-pagination"><span class="pagination-active"></span><span></span><span></span></div>
+      </section>
+
+      <div class="dashboard page-shell">
+        <section class="section-heading progress-heading">
+          <div><span class="eyebrow muted-eyebrow">SUA JORNADA</span><h2>Um capítulo de cada vez.</h2></div>
+          <span class="live-badge"><span></span> PROGRESSO SALVO</span>
+        </section>
+
+        <section class="overview-grid" aria-label="Perfil e progresso de leitura">
+          <article class="profile-card surface-card">
+            <div class="profile-cover" id="profile-cover"></div>
+            <div class="profile-top">
+              <div class="avatar-wrap">
+                <img id="profile-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80" alt="Foto de perfil de Marina" />
+                <span class="level-badge">NÍVEL <b id="level-number">3</b></span>
+              </div>
+              <div class="profile-copy"><span class="eyebrow muted-eyebrow">QUE BOM TER VOCÊ AQUI</span><h3 id="profile-name">Leitor(a)</h3><p id="profile-quote">“Disciplina hoje, liberdade amanhã.”</p><small class="profile-username" id="profile-username"></small></div>
+              <button class="text-action edit-profile" id="profile-edit">Meu perfil <svg class="icon"><use href="#i-chevron" /></svg></button>
+            </div>
+            <p class="profile-bio" id="profile-bio"></p>
+            <div class="profile-extras"><div class="favorite-genres" id="favorite-genres"></div><div class="profile-socials" id="profile-socials"></div></div>
+            <div class="profile-stats">
+              <div class="stat-item"><span>LIVROS LIDOS</span><strong id="books-read">12</strong><small>este ano</small></div>
+              <div class="stat-item"><span>PONTOS</span><strong id="total-points">1.180</strong><small>pontos acumulados</small></div>
+              <div class="stat-item"><span>SEQUÊNCIA</span><strong><span id="streak-count">7</span> <small class="stat-unit">dias</small></strong><small class="streak-caption"><svg class="icon"><use href="#i-flame" /></svg> você está indo bem</small></div>
+            </div>
+          </article>
+
+          <article class="level-card surface-card">
+            <div class="card-topline"><span class="eyebrow muted-eyebrow">SEU PRÓXIMO DESTINO</span><svg class="icon gold-icon"><use href="#i-spark" /></svg></div>
+            <div class="level-content">
+              <div class="progress-ring" id="level-ring" role="img" aria-label="Progresso do nível: 45%">
+                <div><strong id="level-percent">45<span>%</span></strong><small>NÍVEL <b id="ring-level-number">3</b></small></div>
+              </div>
+              <div class="level-copy"><span>QUASE LÁ</span><h3>Seu próximo nível<br />está à vista.</h3><p>Continue lendo e colecione novas conquistas.</p></div>
+            </div>
+            <div class="xp-row"><span>XP DO NÍVEL <b id="xp-current">180</b> / <b id="xp-target">500</b></span><span id="xp-remaining">320 XP restantes</span></div>
+            <div class="progress-track xp-track"><span id="xp-bar" style="width:36%"></span></div>
+          </article>
+        </section>
+
+        <section class="section-heading mission-heading" id="missao">
+          <div><span class="eyebrow muted-eyebrow">A LEITURA DO SEU CLUBE</span><h2>Leitura em andamento</h2></div>
+          <label class="club-picker-label" id="reading-club-picker-wrap" hidden>CLUBE
+            <select id="reading-club-picker" aria-label="Selecionar clube"></select>
+          </label>
+        </section>
+        <section class="mission-grid" aria-label="Livro atual e registro de leitura">
+          <article class="mission-card surface-card">
+            <div class="book-cover">
+              <img id="current-book-image" src="tema escuro livro espera.jpg" alt="Livros enquanto o clube escolhe sua próxima leitura" />
+              <span class="cover-label" id="current-book-club">LIVRO DA<br />SEMANA</span>
+              <span class="cover-title" id="current-book-cover-title">AGUARDANDO<br />UMA LEITURA</span>
+              <span class="cover-author" id="current-book-cover-author">O ADMINISTRADOR VAI ESCOLHER</span>
+            </div>
+            <div class="mission-details">
+              <span class="mission-tag"><span></span> LIVRO ESCOLHIDO PELO ADMINISTRADOR</span>
+              <h3 id="current-book-title">Seu clube ainda não escolheu um livro.</h3><p class="book-author" id="current-book-author"></p>
+              <p class="mission-description" id="current-book-description">Assim que o administrador adicionar a leitura da semana, ela aparecerá aqui.</p>
+              <div class="reading-meta"><span><svg class="icon"><use href="#i-calendar" /></svg> <span id="current-book-deadline">Aguardando leitura do clube</span></span></div>
+              <div class="mission-progress-label"><span>SUA LEITURA</span><b id="mission-percent">0%</b></div>
+              <div class="progress-track"><span id="mission-bar" style="width:0%"></span></div>
+              <div class="reading-log">
+                <div class="reading-log-heading"><span class="eyebrow muted-eyebrow">SEU TEMPO COM O LIVRO</span><span class="reading-log-totals"><b id="pages-total">0</b> / <b id="pages-plan">250</b> páginas <span>·</span> <b id="minutes-total">0 min</b> lidos</span></div>
+                <form id="reading-form" class="reading-form" hidden>
+                  <label class="reading-input-label">Registrar por
+                    <select id="reading-mode" aria-label="Tipo de registro">
+                      <option value="pages">Páginas</option>
+                      <option value="time">Tempo de leitura</option>
+                    </select>
+                  </label>
+                  <div id="reading-pages-fields" class="reading-fields">
+                    <label class="reading-input-label">Páginas lidas<input id="reading-pages" type="number" min="1" max="10000" step="1" placeholder="Ex.: 12" required /></label>
+                  </div>
+                  <div id="reading-time-fields" class="reading-fields" hidden>
+                    <label class="reading-input-label">Horas<input id="reading-hours" type="number" min="0" max="24" step="1" value="0" disabled /></label>
+                    <label class="reading-input-label">Minutos<input id="reading-minutes" type="number" min="0" max="59" step="1" value="15" disabled /></label>
+                  </div>
+                  <button class="button button-gold reading-submit" type="submit">Salvar leitura <svg class="icon"><use href="#i-check" /></svg></button>
+                </form>
+                <p class="reading-feedback" id="reading-feedback" aria-live="polite"></p>
+                <div class="reading-history" id="reading-history" aria-live="polite"></div>
+              </div>
+              <section class="book-comments">
+                <div class="book-comments-heading"><span class="eyebrow muted-eyebrow">CONVERSA SOBRE A LEITURA</span><span id="comment-count">0 comentários</span></div>
+                <form class="comment-form" id="book-comment-form" hidden>
+                  <textarea id="book-comment-input" maxlength="1000" rows="3" placeholder="Compartilhe uma ideia, impressão ou pergunta sobre o livro..." required></textarea>
+                  <button class="button button-gold" type="submit">Publicar comentário <svg class="icon"><use href="#i-arrow" /></svg></button>
+                </form>
+                <div class="comments-list" id="book-comments-list" aria-live="polite"></div>
+              </section>
+            </div>
+          </article>
+          <aside class="rewards-card surface-card">
+            <span class="eyebrow muted-eyebrow">UM POUCO DE INSPIRAÇÃO</span><h3>Uma página<br />de cada vez.</h3>
+            <div class="reward-list">
+              <div class="reward-item"><span class="reward-icon">✳</span><span><b>Seu ritmo</b><small>registre páginas ou tempo</small></span></div>
+              <div class="reward-item"><span class="reward-icon">◈</span><span><b>Seu progresso</b><small>acompanhe a leitura do livro</small></span></div>
+              <div class="reward-item"><span class="reward-icon">✧</span><span><b>Boas conversas</b><small>troque impressões com o clube</small></span></div>
+            </div>
+            <blockquote>“A leitura é uma viagem de quem não pode pegar um trem.”<cite>— Francis de Croisset</cite></blockquote>
+            <button class="rewards-more" id="rewards-details">Como acompanhar a leitura <svg class="icon"><use href="#i-arrow" /></svg></button>
+          </aside>
+        </section>
+
+        <section class="clubs-section" id="clubes">
+          <div class="section-heading clubs-heading">
+            <div><span class="eyebrow muted-eyebrow">LEITURA FICA MELHOR EM BOA COMPANHIA</span><h2>Seu clube da semana</h2></div>
+          </div>
+          <div class="clubs-layout">
+            <div class="clubs-list" id="clubs-list" aria-live="polite"></div>
+            <article class="club-actions surface-card">
+              <span class="eyebrow muted-eyebrow">ENCONTRE SUA TURMA</span>
+              <h3>Um clube para<br />ler junto.</h3>
+              <form id="join-club-form" class="club-form join-club-form">
+                <label class="reading-input-label">Já tem um código de convite?
+                  <span class="code-input-wrap"><svg class="icon"><use href="#i-users" /></svg><input id="club-code" type="text" maxlength="8" pattern="[A-Za-z0-9]{8}" placeholder="Ex.: A4K9M2QX" autocomplete="off" required /></span>
+                </label>
+                <button class="button button-outline" type="submit">Entrar com código <svg class="icon"><use href="#i-arrow" /></svg></button>
+              </form>
+              <div class="club-form-divider"><span></span> OU CRIE O SEU <span></span></div>
+              <form id="create-club-form" class="club-form">
+                <label class="reading-input-label">Nome do clube<input id="club-name" type="text" maxlength="60" placeholder="Ex.: Páginas de domingo" required /></label>
+                <button class="button button-gold" type="submit">Criar clube <svg class="icon"><use href="#i-arrow" /></svg></button>
+              </form>
+              <p class="club-note" id="club-note">Compartilhe o código do clube com quem vai ler com você.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="club-admin-section" id="admin-tools" hidden>
+          <div class="section-heading activities-heading">
+            <div><span class="eyebrow muted-eyebrow">FERRAMENTAS DO ADMINISTRADOR</span><h2>Organize a próxima leitura.</h2></div>
+          </div>
+          <div class="admin-tabs" role="tablist" aria-label="Ferramentas do administrador">
+            <button class="admin-tab active" type="button" role="tab" aria-selected="true" data-admin-tab="book">Adicionar livro</button>
+            <button class="admin-tab" type="button" role="tab" aria-selected="false" data-admin-tab="task">Criar atividade</button>
+          </div>
+          <article class="admin-panel surface-card" id="admin-book-panel">
+            <span class="eyebrow muted-eyebrow">NOVA LEITURA DO CLUBE</span>
+            <h3>Escolha o próximo livro.</h3>
+            <form id="admin-book-form" class="admin-form">
+              <label class="reading-input-label">Título<input id="admin-book-title" type="text" maxlength="160" placeholder="Nome do livro" required /></label>
+              <label class="reading-input-label">Autor(a)<input id="admin-book-author" type="text" maxlength="120" placeholder="Nome do(a) autor(a)" required /></label>
+              <label class="reading-input-label">Número de páginas<input id="admin-book-pages" type="number" min="1" max="10000" value="250" required /></label>
+              <label class="reading-input-label">Ler até<input id="admin-book-deadline" type="date" required /></label>
+              <label class="reading-input-label admin-description-field">Sobre esta leitura<textarea id="admin-book-description" rows="3" maxlength="500" placeholder="Uma breve apresentação do livro"></textarea></label>
+              <button class="button button-gold" type="submit">Adicionar livro da semana <svg class="icon"><use href="#i-arrow" /></svg></button>
+            </form>
+          </article>
+          <article class="admin-panel surface-card" id="admin-task-panel" hidden>
+            <span class="eyebrow muted-eyebrow">NOVA ATIVIDADE DO CLUBE</span>
+            <h3>Convide o grupo para participar.</h3>
+            <form id="admin-task-form" class="admin-form">
+              <label class="reading-input-label">Título<input id="admin-task-title" type="text" maxlength="120" placeholder="Ex.: Compartilhe sua frase favorita" required /></label>
+              <label class="reading-input-label">Descrição<textarea id="admin-task-description" rows="3" maxlength="500" placeholder="Explique o que os leitores podem fazer" required></textarea></label>
+              <label class="reading-input-label">Pontos de recompensa<input id="admin-task-points" type="number" min="0" max="1000" value="20" required /></label>
+              <label class="reading-input-label">Prazo<input id="admin-task-deadline" type="date" required /></label>
+              <label class="reading-input-label">Categoria<input id="admin-task-category" type="text" maxlength="30" value="LEITURA" required /></label>
+              <button class="button button-gold" type="submit">Adicionar atividade <svg class="icon"><use href="#i-arrow" /></svg></button>
+            </form>
+          </article>
+        </section>
+
+        <section class="community-section" id="comunidade">
+          <div class="section-heading activities-heading">
+            <div><span class="eyebrow muted-eyebrow">GENTE QUE LÊ JUNTO</span><h2>Comunidade do clube</h2></div>
+            <span class="member-count" id="member-count">0 leitores</span>
+          </div>
+          <div class="community-layout">
+            <article class="members-card surface-card">
+              <div class="members-heading"><span class="eyebrow muted-eyebrow">MEMBROS</span><span id="community-club-name"></span></div>
+              <div id="club-members-list" class="club-members-list" aria-live="polite"></div>
+            </article>
+            <article class="community-invite-card surface-card">
+              <span class="eyebrow muted-eyebrow">TRAGA MAIS LEITORES</span>
+              <h3>Convide alguém<br />para o clube.</h3>
+              <div class="club-invite-row"><span><small>CÓDIGO DE CONVITE</small><b id="community-club-code">—</b></span><button type="button" class="button button-outline" id="copy-community-code">Copiar</button></div>
+              <p id="community-role-note">Quem cria o clube começa como administrador.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="activities-section" id="atividades">
+          <div class="section-heading activities-heading">
+            <div><span class="eyebrow muted-eyebrow">PEQUENOS PASSOS, GRANDES DESCOBERTAS</span><h2>Minhas atividades <span class="activity-count" id="activity-count">00</span></h2></div>
+            <a class="text-action all-activities" href="#atividades">Ver todas <svg class="icon"><use href="#i-arrow" /></svg></a>
+          </div>
+          <div class="activities-toolbar">
+            <div class="filter-tabs" role="tablist" aria-label="Filtrar atividades">
+              <button class="filter-tab active" role="tab" aria-selected="true" data-filter="all">Todas <span id="count-all">00</span></button>
+              <button class="filter-tab" role="tab" aria-selected="false" data-filter="pending">Pendentes <span id="count-pending">00</span></button>
+              <button class="filter-tab" role="tab" aria-selected="false" data-filter="completed">Concluídas <span id="count-completed">00</span></button>
+            </div>
+            <label class="search-field" id="search-field"><svg class="icon"><use href="#i-search" /></svg><input id="activity-search" type="search" placeholder="Buscar atividade..." aria-label="Buscar atividade" /></label>
+          </div>
+          <div class="activity-grid" id="activity-grid" aria-live="polite"></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="quote-footer protected-content" id="rodape">
+      <span class="quote-mark">“</span>
+      <p>Livros são a prova de que os seres humanos<br class="desktop-break" /> são capazes de fazer magia.</p>
+      <span class="quote-author">CARL SAGAN <span></span> UMA PÁGINA DE CADA VEZ</span>
+      <div class="footer-bottom"><a class="brand footer-brand" href="#inicio"><span class="brand-mark"><svg class="icon"><use href="#i-book" /></svg></span><span class="brand-copy"><strong>entrelinhas</strong><small>LER É VIVER MAIS</small></span></a><span>FEITO COM CARINHO PARA QUEM AMA LER <span class="footer-heart">♥</span></span><a href="#inicio">VOLTAR AO TOPO ↑</a></div>
+    </footer>
+
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    <dialog class="profile-dialog" id="profile-dialog" aria-labelledby="profile-dialog-title">
+      <form class="profile-editor" id="profile-form">
+        <button class="dialog-close" type="button" id="profile-close" aria-label="Fechar">×</button>
+        <span class="eyebrow muted-eyebrow">SEU ESPAÇO, DO SEU JEITO</span>
+        <h2 id="profile-dialog-title">Personalize seu perfil.</h2>
+        <div class="profile-cover-preview" id="profile-cover-preview"><label class="cover-url-field">URL da foto de capa<input id="edit-cover-url" type="url" placeholder="https://..." /></label></div>
+        <div class="profile-image-fields">
+          <label class="profile-upload"><svg class="icon"><use href="#i-image" /></svg> Foto de perfil<input id="edit-avatar-file" type="file" accept="image/*" /></label>
+          <label class="profile-upload"><svg class="icon"><use href="#i-image" /></svg> Foto de capa<input id="edit-cover-file" type="file" accept="image/*" /></label>
+        </div>
+        <label class="profile-form-field">URL da foto de perfil<input id="edit-avatar-url" type="url" placeholder="https://..." /></label>
+        <div class="profile-form-grid">
+          <label class="profile-form-field">Nome de exibição<input id="edit-display-name" type="text" maxlength="100" required /></label>
+          <label class="profile-form-field">Nome de usuário<input id="edit-username" type="text" maxlength="30" pattern="[A-Za-z0-9_]{3,30}" required /></label>
+        </div>
+        <label class="profile-form-field">Sobre mim<textarea id="edit-bio" maxlength="500" rows="3" placeholder="Que histórias você gosta de ler?"></textarea></label>
+        <label class="profile-form-field">Minha frase<input id="edit-quote" type="text" maxlength="120" placeholder="Uma frase que te inspira" /></label>
+        <fieldset class="genre-fieldset"><legend>Gêneros favoritos</legend><div class="genre-options" id="genre-options"></div></fieldset>
+        <div class="social-fields">
+          <label class="profile-form-field">Instagram<input id="edit-instagram" type="url" placeholder="https://instagram.com/..." /></label>
+          <label class="profile-form-field">Goodreads<input id="edit-goodreads" type="url" placeholder="https://goodreads.com/..." /></label>
+          <label class="profile-form-field">Skoob<input id="edit-skoob" type="url" placeholder="https://skoob.com.br/..." /></label>
+          <label class="profile-form-field">Twitter / X<input id="edit-twitter" type="url" placeholder="https://x.com/..." /></label>
+        </div>
+        <p class="profile-form-error" id="profile-form-error" role="alert"></p>
+        <button class="button button-gold profile-save" id="profile-save" type="submit">Salvar perfil <svg class="icon"><use href="#i-check" /></svg></button>
+      </form>
+    </dialog>
+
+    <dialog class="detail-dialog" id="detail-dialog" aria-labelledby="detail-title">
+      <div class="dialog-card detail-card">
+        <button class="dialog-close" type="button" id="detail-close" aria-label="Fechar">×</button>
+        <span class="eyebrow muted-eyebrow">SUA JORNADA, NO SEU TEMPO</span>
+        <h2 id="detail-title">Um novo capítulo te espera.</h2>
+        <p id="detail-copy">Cada leitura abre espaço para novas ideias. Um pequeno passo hoje já faz diferença.</p>
+        <button class="button button-gold" id="detail-action">Que bom <svg class="icon"><use href="#i-arrow" /></svg></button>
+      </div>
+    </dialog>
+
+    <dialog class="delete-club-dialog" id="delete-club-dialog" aria-labelledby="delete-club-title" aria-describedby="delete-club-description">
+      <div class="delete-club-card">
+        <button class="dialog-close" type="button" id="delete-club-close" aria-label="Fechar">×</button>
+        <span class="delete-club-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6m4-6v6M5 7l1 14h12l1-14M9 7V4h6v3" /></svg>
+        </span>
+        <span class="eyebrow muted-eyebrow">ENCERRAR ESTE CAPÍTULO</span>
+        <h2 id="delete-club-title">Excluir este clube?</h2>
+        <p id="delete-club-description">Essa ação é permanente. O clube e os conteúdos associados, como livros, atividades e comentários, serão removidos.</p>
+        <div class="delete-club-name"><small>CLUBE SELECIONADO</small><strong id="delete-club-name"></strong></div>
+        <div class="delete-club-actions">
+          <button class="button button-outline" id="delete-club-cancel" type="button">Manter clube</button>
+          <button class="button delete-club-confirm" id="delete-club-confirm" type="button">Sim, excluir clube</button>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>

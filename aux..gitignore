@@ -1,0 +1,10 @@
+# Ignorar segredos e variáveis de ambiente
+.env
+.env.local
+
+# Ignorar dependências
+node_modules/
+
+# Ignorar cache do sistema
+.DS_Store
+Thumbs.db
